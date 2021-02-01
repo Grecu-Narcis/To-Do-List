@@ -1,7 +1,7 @@
 # To-Do-List
 To-Do List with C++
 
-#List
+# List
 A class which manage a list of task with following attributes:
   1) task name
   2) task due date
