@@ -1,18 +1,12 @@
 #pragma once
 #include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
+#include <conio.h>
 #include <Windows.h>
-
-struct Item {
-	std::string taskName, taskDueDate;
-	bool isDone;
-};
+#include "Task.h"
 
 class List {
 private:
-	std::vector<Item> tasks;
+	std::vector<Task> tasks;
 	const char filepath[10] = "list.txt";
 
 public:
@@ -32,8 +26,9 @@ public:
 	bool loadFromFile();
 	void displayList();
 	void createNewList();
-	void addNewObjective();
-	void removeObjective();
+	void addNewTask();
+	void removeTask();
 	void loadToFile();
+	void sortByDueDate();
 };
 
