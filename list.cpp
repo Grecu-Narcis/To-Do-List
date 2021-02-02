@@ -7,8 +7,7 @@ void List::menu() {
 
 	char op;
 
-	std::cin.get(op);
-	std::cin.get();
+	op = _getch();
 
 	if (op == '1') {
 		system("cls");
@@ -19,11 +18,10 @@ void List::menu() {
 		std::cout << "1) Add new task.\n2) Close.\n";
 
 
-		std::cin.get(op);
-		std::cin.get();
+		op = _getch();
 
 		if (op == '1') {
-			addNewObjective();
+			addNewTask();
 			system("cls");
 			menu();
 		}
@@ -42,17 +40,16 @@ void List::menu() {
 			std::cout << "What do you want to do?\n";
 			std::cout << "1) Add new task.\n2) Remove task.\n3) Close.\n";
 
-			std::cin.get(op);
-			std::cin.get();
+			op = _getch();
 
 			if (op == '1') {
-				addNewObjective();
+				addNewTask();
 				system("cls");
 				menu();
 			}
 
 			else if (op == '2') {
-				removeObjective();
+				removeTask();
 
 				std::cout << "We are redirecting you to main menu!\n";
 				Sleep(1500);
@@ -92,12 +89,11 @@ bool List::loadFromFile() {
 
 	tasks.clear();
 
-	Item aux;
+	Task aux;
 
-	while (!fin.eof()) {
+	while (!fin.eof()) { // read every task while file is not empty
 		getline(fin, aux.taskName);
-		getline(fin, aux.taskDueDate);
-			
+		fin >> aux.taskDueDate.day >> aux.taskDueDate.month >> aux.taskDueDate.year;
 		fin >> aux.isDone;
 		fin.get();
 
@@ -111,14 +107,14 @@ bool List::loadFromFile() {
 void List::displayList() {
 	if (tasks.size() == 0)
 		std::cout << "Your To-Do List is empty!\n\n";
+	
 	else {
+		sortByDueDate();
+
 		std::cout << "Here is your To-Do List:\n\n";
 		for (int i = 0; i < tasks.size(); ++i) {
 			std::cout << "Task no. " << i + 1 << ":\n";
-			std::cout << "Task name: " << tasks[i].taskName << '\n';
-			std::cout << "Task due date: " << tasks[i].taskDueDate << '\n';
-			std::cout << "Task status: " << (tasks[i].isDone == true ? "Finished" : "Not Finished") << "\n\n";
-
+			tasks[i].printTask();
 		}
 		std::cout << '\n';
 	}
@@ -133,20 +129,16 @@ void List::createNewList() {
 	std::cout << "New To-Do list created succesfully!\n\n";
 }
 
-bool isCorrectDate(std::string date) {
-	return 1;
-}
-
-void List::addNewObjective() {
+void List::addNewTask() {
 	system("cls");
 
-	Item aux;
+	Task aux;
 
 	std::cout << "Enter task name: ";
 	getline(std::cin, aux.taskName);
 
 	std::cout << "Enter task due date (dd mm yyyy): ";
-	getline(std::cin, aux.taskDueDate);
+	std::cin >> aux.taskDueDate.day >> aux.taskDueDate.month >> aux.taskDueDate.year;
 
 	aux.isDone = 0;
 
@@ -158,7 +150,10 @@ void List::addNewObjective() {
 		file << '\n';
 
 	file << aux.taskName << '\n';
-	file << aux.taskDueDate << '\n';
+	
+	aux.taskDueDate.printDate(file);
+	
+	file << ' ';
 	file << aux.isDone;
 
 	file.close();
@@ -167,7 +162,7 @@ void List::addNewObjective() {
 	Sleep(1000);
 }
 
-void List::removeObjective() {
+void List::removeTask() {
 	system("cls");
 	displayList();
 
@@ -187,9 +182,23 @@ void List::loadToFile() {
 	std::ofstream fout(filepath);
 
 	for (int i = 0; i < tasks.size(); ++i) {
-		fout << tasks[i].taskName << '\n' << tasks[i].taskDueDate<<'\n'<<tasks[i].isDone;
+		fout << tasks[i].taskName << '\n';
+		tasks[i].taskDueDate.printDate(fout);
+		fout << ' ' << tasks[i].isDone;
 		
 		if (i < tasks.size() - 1)
 			fout << '\n';
 	}
+}
+
+void List::sortByDueDate() {
+	int i, j, n = tasks.size();
+
+	for (i=0;i<n-1;++i)
+		for (j=i+1;j<n;++j)
+			if (tasks[i].taskDueDate > tasks[j].taskDueDate) {
+				Task aux = tasks[i];
+				tasks[i] = tasks[j];
+				tasks[j] = aux;
+			}
 }
