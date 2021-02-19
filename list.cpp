@@ -1,6 +1,82 @@
 #include "list.h"
 
-void List::menu() {
+void List::createListMenu() {
+	char op;
+
+	system("cls");
+	createNewList();
+	displayList();
+
+	std::cout << "What do you want to do?\n";
+	std::cout << "1) Add new task.\n2) Close.\n";
+
+
+	op = _getch();
+
+	if (op == '1') {
+		addNewTask();
+		system("cls");
+		openedListMenu();
+	}
+
+	else if (op == '2') {
+		system("cls");
+		std::cout << "Hope you'll be back soon!\n";
+	}
+}
+
+void List::openedListMenu() {
+	char op;
+	
+	if (loadFromFile()) {
+		system("cls");
+		displayList();
+
+		std::cout << "What do you want to do?\n";
+		std::cout << "1) Add new task.\n2) Remove task.\n3) Mark task as done.\n4) Close\n";
+
+		op = _getch();
+
+		if (op == '1') {
+			addNewTask();
+
+			Sleep(1500);
+
+			system("cls");
+			openedListMenu();
+		}
+
+		else if (op == '2') {
+			removeTask();
+
+			Sleep(1500);
+			
+			system("cls");
+			openedListMenu();
+		}
+
+		else if (op == '3') {
+			system("cls");
+			updateTaskStatus();
+			Sleep(1500);
+			openedListMenu();
+		}
+
+		else if (op == '4') {
+			system("cls");
+			std::cout << "Hope you'll be back soon!\n";
+		}
+	}
+
+	else {
+		std::cout << "You don't have a To-Do List!\nWe are redirecting you to main menu!\n";
+		Sleep(1500);
+		system("cls");
+		mainMenu();
+	}
+}
+
+void List::mainMenu() {
 	std::cout << "Welcome to your To-Do List!\n\n";
 	std::cout << "What do you want to do?\n";
 	std::cout << "1) Create a new To-Do List.\n2) Open your To-Do List.\n3) Close.\n\n";
@@ -10,72 +86,16 @@ void List::menu() {
 	op = _getch();
 
 	if (op == '1') {
-		system("cls");
-		createNewList();
-		displayList();
-
-		std::cout << "What do you want to do?\n";
-		std::cout << "1) Add new task.\n2) Close.\n";
-
-
-		op = _getch();
-
-		if (op == '1') {
-			addNewTask();
-			system("cls");
-			menu();
-		}
-
-		else if (op == '2') {
-			system("cls");
-			std::cout << "Hope you'll be back soon!\n";
-		}
+		createListMenu();
 	}
 
 	else if (op == '2') {
-		if (loadFromFile()) {
-			system("cls");
-			displayList();
-
-			std::cout << "What do you want to do?\n";
-			std::cout << "1) Add new task.\n2) Remove task.\n3) Close.\n";
-
-			op = _getch();
-
-			if (op == '1') {
-				addNewTask();
-				system("cls");
-				menu();
-			}
-
-			else if (op == '2') {
-				removeTask();
-
-				std::cout << "We are redirecting you to main menu!\n";
-				Sleep(1500);
-				system("cls");
-
-				menu();
-			}
-
-			else if (op == '3') {
-				system("cls");
-				std::cout << "Hope you'll be back soon!\n";
-			}
-		}
-
-		else {
-			std::cout << "You don't have a To-Do List!\nWe are redirecting you to main menu!\n";
-			Sleep(1500);
-			system("cls");
-			menu();
-		}
-
+		openedListMenu();
 	}
 
 	else if (op == '3') {
 		system("cls");
-		std::cout << "Hope you'll be back soon!\n";
+		updateTaskStatus();
 	}
 }
 
@@ -176,6 +196,21 @@ void List::removeTask() {
 	loadToFile();
 
 	std::cout << "Task removed succesfully!\n\n";
+}
+
+void List::updateTaskStatus() {
+	system("cls");
+	displayList();
+
+	std::cout << "Enter task id: ";
+	int id;
+	std::cin >> id;
+
+	tasks[id - 1].markAsDone();
+	loadToFile();
+
+	std::cout << "Task marked as done succesfully!\n";
+
 }
 
 void List::loadToFile() {
