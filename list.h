@@ -22,13 +22,16 @@ public:
 			fin.close();
 	}
 
-	void menu();
+	void mainMenu();
+	void createListMenu();
+	void openedListMenu();
+	
 	bool loadFromFile();
 	void displayList();
 	void createNewList();
 	void addNewTask();
 	void removeTask();
+	void updateTaskStatus();
 	void loadToFile();
 	void sortByDueDate();
 };
-
