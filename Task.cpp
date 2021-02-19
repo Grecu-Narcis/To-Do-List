@@ -7,3 +7,7 @@ void Task::printTask() {
 	std::cout << '\n';
 	std::cout << "Task status: " << (this->isDone == true ? "Finished" : "Not Finished") << "\n\n";
 }
+
+void Task::markAsDone() {
+	isDone = true;
+}
