@@ -9,5 +9,5 @@ public:
 	bool isDone;
 
 	void printTask();
+	void markAsDone();
 };
-
